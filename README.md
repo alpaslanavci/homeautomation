@@ -1,44 +1,46 @@
-**EE241 Home Automation Project**
+# EE241 Home Automation Project
 
+## Description
 This project aims to implement a smart house system using Verilog HDL. With this project, we are trying to help residents control their house.  
-This project is managed by the following students: Alpaslan Avcı (20220701013), Adnan Tolga Aksoy (***)
+This project is managed by the following students: Alpaslan Avcı (20220701013), Adnan Tolga Aksoy (20220701011).
 
------------------------------------------------------------------------------------------------------------------
+## Implementations
 
 The systems listed below will be implemented in our Home Automation System:
 
-  * 0--> Authorization
-  * 1--> General Management System
-    * 1.1 --> Lighting Control
-    * 1.2 --> White Goods Control
-    * 1.3 --> Curtains, Windows and Doors Control
-  * 2--> Climate Control System
-    * 2.1 --> AC Control
-    * 2.2 --> Heating Systems Control
-  * 3--> Safety System
-    * 3.1 --> Fire Dedector and Fire Extinguish Systems
-    * 3.2 --> Burglar Dedection Systems
-  * 4--> Energy Management System
+  * Authorization
+  * General Management System
+    * Lighting Control
+    * White Goods Control
+    * Curtains, Windows and Doors Control
+  * Climate Control System
+    * AC Control
+    * Heating Systems Control
+  * Safety System
+    * Fire Dedector and Fire Extinguish Systems
+    * Burglar Dedection Systems
+    * Digital Door Locking
 
------------------------------------------------------------------------------------------------------------------
+### Authorization
+This plugin aims to ensure that only authorized users can use the home automation system. Each user will have an ID and a password. Users who log in to the application with their ID and password will be able to access automation systems.
 
-**Authorization**
-  The aim of this system is to set which residents (or who, in general) can have access to home automation system. This is going to be done with the help of ID and Password. Each user    will be attained an ID and a password, which then they will be authorized by our application to reach and control the automation system. Unauthorized users will not be able to       
-  control.
+### General Management System
+It ensures that the general specifications of the house are able to be controlled. The following features are availables:
+ * Turn on/off the lights.
+ * Adjust the brightness and change the color of the lights.
+ * Turn on/off white goods such as oven, refrigator, dishwasher, washing machine, television.
+ * Open/close windows, doors, curtains.
 
-**General Management Systems**
-  With this system residents are going to have control over many aspects inside the house. The following actions will be doable:
-    - Turn on/off each lighting connected to the home automation system.
-    - Turn on/off each white goods connected to the home automation system.
-    - Open/close each door, curtaion or window connected to the home automation system.
+### Climate Control System
+Controls systems that adjust the temperature of the house.
+ * Turn on/off AC.
+ * Set AC to any mode.
+ * Turn on/off heating systems.
+ * Set heating systems to any mode.
 
-**Climate Control System**
-  With this system residents are going to have control over the AC and heating systems. The following actions will be doable:
-    - Turn on/off AC.
-    - Set AC to any mode it has.
-    - Turn on/off heating systems.
-    - Set heating systems to any mode it has.
-
-**Safety System**
-  With this system residents are going to be aware of some hazard s
-  
+### Safety System
+Controls home security systems
+ * Fire dedection and alarm.
+ * Fire extinguisher starter.
+ * Burglar dedection and alarm.
+ * Locking/Unlocking exterior doors.

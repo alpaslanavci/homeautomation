@@ -16,5 +16,11 @@ module mux4to1 (input wire [1:0] sel, input wire [3:0] in, output reg out);
 endmodule
 
 module mux2to1 (input wire sel, input wire [1:0] in, output reg out);
-    assign out = (sel) ? in[1] : in[0];
+    always @(*)
+        begin
+            case (sel)
+                1'b0: out = in[0];
+                1'b1: out = in[1];
+            endcase
+        end
 endmodule

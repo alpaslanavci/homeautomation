@@ -5,7 +5,7 @@ module heatSystems_control (input wire [1:0] mode, input wire mode_select, outpu
     //one of the mods will be selected.
 
     wire mux_out;       
-    2to1mux heatSystems_mode_selector(.sel(mode_select), .in(mode), .out(mux_out));
+    mux2to1 heatSystems_mode_selector(.sel(mode_select), .in(mode), .out(mux_out));
     always @(*)
         select_mode = mux_out;
 

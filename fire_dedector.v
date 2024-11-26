@@ -1,6 +1,6 @@
 `include "project.v"
 
-module fire_dedector(input wire [1:0] fire_indicators, output reg fire_extinguisher);
+module fire_dedector(input wire [1:0] fire_indicators, output fire_extinguisher);
     //Fire indicators are a smoke dedector which is input 1 at smoke presence
     //and a termometer which is input 1 over 45 degrees Celcius.
     // --------------------------------------------------------

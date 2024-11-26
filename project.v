@@ -2,7 +2,7 @@
 
 
 
-module 4to1mux (input wire [1:0] sel, input wire [3:0] in, output reg out);
+module mux4to1 (input wire [1:0] sel, input wire [3:0] in, output reg out);
     always @(*)
         begin
             case (sel)
@@ -15,6 +15,6 @@ module 4to1mux (input wire [1:0] sel, input wire [3:0] in, output reg out);
         end
 endmodule
 
-module 2to1mux (input wire sel, input wire [1:0] in, output reg out);
+module mux2to1 (input wire sel, input wire [1:0] in, output reg out);
     assign out = (sel) ? in[1] : in[0];
 endmodule

@@ -5,7 +5,7 @@ module AC_control(input wire [1:0] mode_selection, input wire [3:0] mode, output
     //one of the mods will be selected.
 
     wire mux_out;
-    4to1mux ac_mode_selector(.sel(mode_selection), .in(mode), .out(mux_out));
+    mux4to1 ac_mode_selector(.sel(mode_selection), .in(mode), .out(mux_out));
 
     always @(*)
         select_mode = mux_out

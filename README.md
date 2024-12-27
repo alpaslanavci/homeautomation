@@ -8,7 +8,6 @@ This project is managed by the following students: Alpaslan Avcı (20220701013),
 
 The systems listed below will be implemented in our Home Automation System:
 
-  * Authorization
   * General Management System
     * Lighting Control
     * White Goods Control
@@ -20,9 +19,6 @@ The systems listed below will be implemented in our Home Automation System:
     * Fire Dedector and Fire Extinguish Systems
     * Burglar Dedection Systems
     * Digital Door Locking
-
-### Authorization
-This plugin aims to ensure that only authorized users can use the home automation system. Each user will have an ID and a password. Users who log in to the application with their ID and password will be able to access automation systems.
 
 ### General Management System
 It ensures that the general specifications of the house are able to be controlled. The following features are availables:

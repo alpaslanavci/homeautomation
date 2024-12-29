@@ -10,11 +10,9 @@ The systems listed below will be implemented in our Home Automation System:
 
   * General Management System
     * Lighting Control
-    * White Goods Control
     * Curtains, Windows and Doors Control
   * Climate Control System
     * AC Control
-    * Heating Systems Control
   * Safety System
     * Fire Dedector and Fire Extinguish Systems
     * Burglar Dedection Systems
@@ -24,15 +22,13 @@ The systems listed below will be implemented in our Home Automation System:
 It ensures that the general specifications of the house are able to be controlled. The following features are availables:
  * Turn on/off the lights.
  * Adjust the brightness and change the color of the lights.
- * Turn on/off white goods such as oven, refrigator, dishwasher, washing machine, television.
  * Open/close windows, doors, curtains.
 
 ### Climate Control System
 Controls systems that adjust the temperature of the house.
  * Turn on/off AC.
  * Set AC to any mode.
- * Turn on/off heating systems.
- * Set heating systems to any mode.
+
 
 ### Safety System
 Controls home security systems

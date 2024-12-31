@@ -128,7 +128,8 @@ module door_control (
         end
         else begin
             case (machine_state)
-                PS: begin
+                PS: 
+                begin
                     alarm_signal <= 1'b0;
                     unlock_signal <= 1'b0;
                     timer_signal <= 1'b0;
@@ -150,7 +151,8 @@ module door_control (
                     end
                 end
 
-                MS: begin 
+                MS: 
+                begin 
                     timer_signal <= 1'b0;
                     alarm_signal <= 1'b0;
                     lock_signal <= 1'b0;
@@ -165,7 +167,8 @@ module door_control (
                     end
                 end
 
-                AS: begin
+                AS: 
+                begin
                     timer_signal <= 1'b1;
                     alarm_signal <= 1'b1;
                     unlock_signal <= 1'b0;
@@ -175,7 +178,8 @@ module door_control (
                         machine_state <= PS;
                 end
 
-                CP: begin
+                CP: 
+                begin
                     alarm_signal <= 1'b0;
                     timer_signal <= 1'b0;
                     unlock_signal <= 1'b0;
@@ -186,7 +190,8 @@ module door_control (
                         machine_state <= MS;
                 end
 
-                default: begin
+                default: 
+                begin
                     machine_state <= PS;
                     fail_attempts <= 2'b00;
                     unlock_signal <= 1'b0;

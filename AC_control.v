@@ -77,10 +77,10 @@ module AC_mode_selection (
   always @( posedge clk ) begin
     if (button_pressed) begin
       case ( current_mode ) 
-        MODE_OFF:        current_mode <= MODE_AUTOMATIC;
-        MODE_AUTOMATIC:  current_mode <= MODE_FAST_COOL;
-        MODE_FAST_COOL:  current_mode <= MODE_ECO;
-        MODE_ECO:        current_mode <= MODE_OFF;
+        2'b00:      current_mode <= 2'b01;
+        2'b01:      current_mode <= 2'b10;
+        2'b10:      current_mode <= 2'b11;
+        2'b11:      current_mode <= 2'b00;
       endcase
     end
   end
@@ -89,6 +89,11 @@ endmodule
 
 
 module AC_control( clk, reset, button_ac, button_up, button_down, temperature, temperature_registered, mode_select_ac, fan_speed, fan_heat );
+
+localparam MODE_OFF        = 2'b00;
+localparam MODE_AUTOMATIC  = 2'b01;
+localparam MODE_FAST_COOL  = 2'b10;
+localparam MODE_ECO        = 2'b11;
 
 input clk, reset, button_ac, button_down, button_up;
 input [1:0] mode_select;

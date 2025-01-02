@@ -1,7 +1,6 @@
 `timescale 1ns/1ps
 
 module AC_control_tb();
-    // Testbench signals
     reg clk, reset;
     reg button_ac, button_up, button_down;
     reg [6:0] temperature;
@@ -36,10 +35,6 @@ module AC_control_tb();
         button_up = 0;
         button_down = 0;
         temperature = 7'd22;  // Starting room temperature
-
-        // Initialize waveform dump
-        $dumpfile("ac_control_tb.vcd");
-        $dumpvars(0, AC_control_tb);
 
         // Reset sequence
         #20 reset = 1;

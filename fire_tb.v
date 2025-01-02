@@ -1,12 +1,10 @@
 `timescale 1ns/1ps
 
 module fire_tb();
-    // Testbench signals
     reg clk, reset;
     reg heat_signal, smoke_signal;
     wire alarm, extinguish;
     
-    // State parameters for readability in test results
     localparam [1:0] IDLE      = 2'b00;
     localparam [1:0] ALARM     = 2'b01;
     localparam [1:0] EXTINGUISH = 2'b10;
@@ -33,10 +31,6 @@ module fire_tb();
         reset = 0;
         heat_signal = 0;
         smoke_signal = 0;
-
-        // Initialize waveform dump
-        $dumpfile("fire_tb.vcd");
-        $dumpvars(0, fire_tb);
 
         // Test Case 1: Reset and Initial State
         $display("\nTest Case 1: Reset and Initial State Check");

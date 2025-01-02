@@ -1,18 +1,17 @@
 `timescale 1ns/1ps
 
 module door_control_tb();
-    // Testbench signals
     reg clk, reset;
     reg [13:0] password_in;
     reg [13:0] new_password;
     reg change_password, unlock_button, ms_button;
     wire unlock_signal, lock_signal, alarm_signal;
 
-    // State parameters for readability
-    localparam [1:0] PS = 2'b00;  // Password State
-    localparam [1:0] MS = 2'b01;  // Menu State
-    localparam [1:0] AS = 2'b10;  // Alarm State
-    localparam [1:0] CP = 2'b11;  // Change Password State
+    // State parameters 
+    localparam [1:0] PS = 2'b00;  
+    localparam [1:0] MS = 2'b01;  
+    localparam [1:0] AS = 2'b10;  
+    localparam [1:0] CP = 2'b11;  
 
     // Instantiate the door_control module
     door_control dut (
@@ -43,10 +42,6 @@ module door_control_tb();
         change_password = 0;
         unlock_button = 0;
         ms_button = 0;
-
-        // Initialize waveform dump
-        $dumpfile("door_control_tb.vcd");
-        $dumpvars(0, door_control_tb);
 
         // Test Case 1: Reset and Initial State
         $display("\nTest Case 1: Reset and Initial State Check");

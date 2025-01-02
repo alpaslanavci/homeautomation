@@ -1,7 +1,6 @@
 `timescale 1ns/1ps
 
 module light_control_tb();
-    // Testbench signals
     reg clk, reset;
     reg color_button;
     reg [7:0] sunlight_sensor;
@@ -30,10 +29,6 @@ module light_control_tb();
         reset = 0;
         color_button = 0;
         sunlight_sensor = 8'd20;  // Initial sunlight value
-
-        // Initialize waveform dump
-        $dumpfile("light_control_tb.vcd");
-        $dumpvars(0, light_control_tb);
 
         // Reset sequence
         #20 reset = 1;

@@ -84,7 +84,7 @@ module AC_mode_selection (
 endmodule
 
 
-module AC_control( clk, reset, button_ac, button_up, button_down, temperature, temperature_registered, fan_speed, fan_heat );
+module AC_control( clk, reset, button_ac, button_up, button_down, temperature, fan_speed, fan_heat );
 
 localparam MODE_OFF        = 2'b00;
 localparam MODE_AUTOMATIC  = 2'b01;
@@ -93,10 +93,10 @@ localparam MODE_ECO        = 2'b11;
 
 input clk, reset, button_ac, button_down, button_up;
 input [6:0] temperature;
-input [6:0] temperature_registered;
 output reg [2:0] fan_speed;
 output reg [7:0] fan_heat;
 wire [1:0] mode_select;
+wire [6:0] temperature_registered;
 
 // Fetching the desired mode using AC_mode_selection module
 AC_mode_selection ac1( .clk(clk), .reset(reset), .button(button_ac), .current_mode(mode_select));

@@ -70,7 +70,7 @@ module AC_mode_selection (
 
   always @(posedge clk or negedge reset) begin
     if (!reset) begin
-        current_mode <= 2'b00; // MODE_OFF
+        current_mode <= 2'b00;
     end else if (button_pressed) begin
         case (current_mode)
             2'b00: current_mode <= 2'b01;

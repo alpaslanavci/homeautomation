@@ -124,13 +124,13 @@ end
 
 always @ ( posedge clk ) begin
     case ( mode_select )
-        2'b00 : // The system is turned-off
+        MODE_OFF : // The system is turned-off
         begin
             fan_speed <= 0;
             fan_heat <= 0;
         end
 
-        2'b01 : // Automatic Mode
+        MODE_AUTOMATIC : // Automatic Mode
         begin
             if ( (temp_diff > 2) && (temp_diff <= 4) ) begin
                 fan_speed <= 3'b001; // Slowest fan speed
@@ -150,13 +150,13 @@ always @ ( posedge clk ) begin
             end
         end
 
-        2'b10 : // Fast Cooling Mode
+        MODE_FAST_COOL : // Fast Cooling Mode
         begin 
             fan_speed <= 3'b100; // Fastest fan speed
             fan_heat <= temperature_registered - 5;
         end
 
-        2'b11 : // Economy Mode
+        MODE_ECO : // Economy Mode
         begin
             fan_speed <= 3'b010;
             fan_heat <= temperature_registered - 2;

@@ -109,7 +109,7 @@ temp_sel ts1(.clk(clk), .reset(reset), .button_down(button_down), .button_up(but
 
 always @ (posedge clk ) begin
     mode_select <= temporary_register_mode;
-    temperature_registered <= temperature_registered;
+    temperature_registered <= temporary_register_temp;
 end
 
 

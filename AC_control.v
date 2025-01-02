@@ -95,14 +95,21 @@ input clk, reset, button_ac, button_down, button_up;
 input [6:0] temperature;
 output reg [2:0] fan_speed;
 output reg [7:0] fan_heat;
-wire [1:0] mode_select;
-wire [6:0] temperature_registered;
+wire [1:0] temporary_register_mode, mode_select;
+wire [6:0] temporary_register_temp, temperature_registered;
 
 // Fetching the desired mode using AC_mode_selection module
-AC_mode_selection ac1( .clk(clk), .reset(reset), .button(button_ac), .current_mode(mode_select));
+AC_mode_selection ac1( .clk(clk), .reset(reset), .button(button_ac), .current_mode(temporary_register_mode));
 
 // Fetching the desired temperature using temp_sel module
-temp_sel ts1(.clk(clk), .reset(reset), .button_down(button_down), .button_up(button_up), .temperature_registered(temperature_registered));
+temp_sel ts1(.clk(clk), .reset(reset), .button_down(button_down), .button_up(button_up), .temperature_registered(temporary_register_temp));
+
+
+always @ (posedge clk ) begin
+    mode_select <= temporary_register_mode;
+    temperature_registered <= temperature_registered;
+end
+
 
 
 // In order for automatic mode to work, the difference between the temperature registered (by the user) and temperature should be known.

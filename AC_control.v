@@ -59,7 +59,7 @@ module AC_mode_selection (
   reg button_pressed;
 
   always @( posedge clk or negedge reset ) begin 
-    if (!rst) begin
+    if (!reset) begin
       button_prev <= 1'b0;
       button_pressed <= 1'b0; 
     end else begin

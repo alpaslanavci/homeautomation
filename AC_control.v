@@ -51,20 +51,14 @@ endmodule
 
 module AC_mode_selection (
   input clk,
-  input rst,
+  input reset,
   input button,
   output reg [1:0] current_mode 
 );
-
-  localparam MODE_OFF        = 2'b00;
-  localparam MODE_AUTOMATIC  = 2'b01;
-  localparam MODE_FAST_COOL  = 2'b10;
-  localparam MODE_ECO        = 2'b11;
-
   reg button_prev;
   reg button_pressed;
 
-  always @( posedge clk or negedge rst ) begin 
+  always @( posedge clk or negedge reset ) begin 
     if (!rst) begin
       button_prev <= 1'b0;
       button_pressed <= 1'b0; 
@@ -74,21 +68,23 @@ module AC_mode_selection (
     end
   end
 
-  always @( posedge clk ) begin
-    if (button_pressed) begin
-      case ( current_mode ) 
-        2'b00:      current_mode <= 2'b01;
-        2'b01:      current_mode <= 2'b10;
-        2'b10:      current_mode <= 2'b11;
-        2'b11:      current_mode <= 2'b00;
-      endcase
+  always @(posedge clk or negedge reset) begin
+    if (!reset) begin
+        current_mode <= 2'b00; // MODE_OFF
+    end else if (button_pressed) begin
+        case (current_mode)
+            2'b00: current_mode <= 2'b01;
+            2'b01: current_mode <= 2'b10;
+            2'b10: current_mode <= 2'b11;
+            2'b11: current_mode <= 2'b00;
+        endcase
     end
   end
 
 endmodule
 
 
-module AC_control( clk, reset, button_ac, button_up, button_down, temperature, temperature_registered, mode_select_ac, fan_speed, fan_heat );
+module AC_control( clk, reset, button_ac, button_up, button_down, temperature, temperature_registered, fan_speed, fan_heat );
 
 localparam MODE_OFF        = 2'b00;
 localparam MODE_AUTOMATIC  = 2'b01;
@@ -96,14 +92,14 @@ localparam MODE_FAST_COOL  = 2'b10;
 localparam MODE_ECO        = 2'b11;
 
 input clk, reset, button_ac, button_down, button_up;
-input [1:0] mode_select;
 input [6:0] temperature;
 input [6:0] temperature_registered;
 output reg [2:0] fan_speed;
 output reg [7:0] fan_heat;
+wire [1:0] mode_select;
 
 // Fetching the desired mode using AC_mode_selection module
-AC_mode_selection ac1( .clk(clk), .reset(reset), .button(button_ac), .mode(mode_select));
+AC_mode_selection ac1( .clk(clk), .reset(reset), .button(button_ac), .current_mode(mode_select));
 
 // Fetching the desired temperature using temp_sel module
 temp_sel ts1(.clk(clk), .reset(reset), .button_down(button_down), .button_up(button_up), .temperature_registered(temperature_registered));

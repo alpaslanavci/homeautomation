@@ -62,7 +62,11 @@ localparam LOW_LUMINOSITY  = 2'b01;
 localparam LIGHTS_OFF      = 2'b00;
 
 // Instantiate color_sel to handle color changes
-color_sel cs(.clk(clk), .reset(reset), .color_button(color_button), .color(color));
+wire [1:0] selected_color 
+color_sel cs(.clk(clk), .reset(reset), .color_button(color_button), .color(selected_color));
+always @ ( posedge clk )
+    color <= selected_color;
+    
 
 // Update luminosity based on the sunlight_sensor value at each rising clock
 always @(posedge clk) begin

@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module temp_sel (
     input wire clk,
     input wire reset,          // Active low asynchronous reset
@@ -508,7 +510,7 @@ localparam LOW_LUMINOSITY  = 2'b01;
 localparam LIGHTS_OFF      = 2'b00;
 
 // Instantiate color_sel to handle color changes
-wire [1:0] selected_color 
+wire [1:0] selected_color; 
 color_sel cs(.clk(clk), .reset(reset), .color_button(color_button), .color(selected_color));
 always @ ( posedge clk )
     color <= selected_color;

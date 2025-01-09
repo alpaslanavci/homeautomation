@@ -78,7 +78,7 @@ endmodule
 
 // Door Control module
 module door_control (
-    input clk, reset,
+    input clk, reset, submit,
     input [13:0] password_in,
     input [13:0] new_password,
     input change_password, unlock_button, ms_button,
@@ -134,19 +134,20 @@ module door_control (
                     unlock_signal <= 1'b0;
                     timer_signal <= 1'b0;
                     lock_signal <= 1'b1;
-
-                    if (password_in == current_password || password_in == password_key) begin
-                        machine_state <= MS;
-                        fail_attempts <= 2'b00;
-                    end
-                    else if (password_in != current_password && password_in != password_key) begin 
-                        if (fail_attempts == 2'd2) begin  // Check for 3 attempts (0,1,2)
-                            machine_state <= AS;
+                    if ( submit ) begin
+                        if (password_in == current_password || password_in == password_key) begin
+                            machine_state <= MS;
                             fail_attempts <= 2'b00;
                         end
-                        else begin
-                            fail_attempts <= fail_attempts + 1'b1;
-                            machine_state <= PS;
+                        else if (password_in != current_password && password_in != password_key) begin 
+                            if (fail_attempts == 2'd2) begin  // Check for 3 attempts (0,1,2)
+                                machine_state <= AS;
+                                fail_attempts <= 2'b00;
+                            end
+                            else begin
+                                fail_attempts <= fail_attempts + 1'b1;
+                                machine_state <= PS;
+                            end
                         end
                     end
                 end

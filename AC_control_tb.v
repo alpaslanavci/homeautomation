@@ -1,123 +1,104 @@
-`timescale 1ns/1ps
+`timescale 1ns / 1ps
 
-module AC_control_tb();
-    reg clk, reset;
-    reg button_ac, button_up, button_down;
-    reg [6:0] temperature;
-    wire [2:0] fan_speed;
-    wire [7:0] fan_heat;
-    wire [1:0] mode_select;
-    wire [6:0] temperature_registered;
+module door_control_tb;
 
-    // Instantiate the AC_control module
-    AC_control dut (
+    // Inputs
+    reg clk;
+    reg reset;
+    reg submit;
+    reg change_password;
+    reg unlock_button;
+    reg ms_button;
+    reg [13:0] password_in;
+    reg [13:0] new_password;
+
+    // Outputs
+    wire unlock_signal;
+    wire lock_signal;
+    wire alarm_signal;
+
+    // Instantiate the Door Control module
+    door_control uut (
         .clk(clk),
         .reset(reset),
-        .button_ac(button_ac),
-        .button_up(button_up),
-        .button_down(button_down),
-        .temperature(temperature),
-        .fan_speed(fan_speed),
-        .fan_heat(fan_heat)
+        .submit(submit),
+        .password_in(password_in),
+        .new_password(new_password),
+        .change_password(change_password),
+        .unlock_button(unlock_button),
+        .ms_button(ms_button),
+        .unlock_signal(unlock_signal),
+        .lock_signal(lock_signal),
+        .alarm_signal(alarm_signal)
     );
 
     // Clock generation
+    always #5 clk = ~clk;
+
+    // Test procedure
     initial begin
+        // Initialize inputs
         clk = 0;
-        forever #5 clk = ~clk;
-    end
-
-    // Test stimulus
-    initial begin
-        // Initialize signals
         reset = 0;
-        button_ac = 0;
-        button_up = 0;
-        button_down = 0;
-        temperature = 7'd22;  // Starting room temperature
+        submit = 0;
+        password_in = 0;
+        new_password = 0;
+        change_password = 0;
+        unlock_button = 0;
+        ms_button = 0;
 
-        // Reset sequence
-        #20 reset = 1;
+        // Apply reset
+        #10 reset = 1;
 
-        // Test Case 1: OFF Mode (Initial state)
+        // Test case 1: Correct password input
+        #10 password_in = 14'd1111;  // Default password
+        submit = 1;
+        #10 submit = 0;
+
+        // Wait and observe the unlock signal
         #20;
-        $display("Test Case 1: OFF Mode");
-        $display("Fan Speed: %d, Fan Heat: %d", fan_speed, fan_heat);
 
-        // Test Case 2: Switch to Automatic Mode
-        #20 button_ac = 1;
-        #10 button_ac = 0;
-        #20;
-        $display("Test Case 2: Automatic Mode");
-        $display("Fan Speed: %d, Fan Heat: %d", fan_speed, fan_heat);
+        // Test case 2: Change password
+        change_password = 1;
+        new_password = 14'd2222;  // New password
+        #10 change_password = 0;
 
-        // Test Case 3: Temperature adjustment in Automatic Mode
-        #20;
-        // Set desired temperature to 24°C
-        button_up = 1;
-        #10 button_up = 0;
-        #10 button_up = 1;
-        #10 button_up = 0;
-        temperature = 7'd28;  // Current temperature higher than desired
-        #20;
-        $display("Test Case 3: Automatic Mode - Temperature Adjustment");
-        $display("Fan Speed: %d, Fan Heat: %d", fan_speed, fan_heat);
+        // Test case 3: Incorrect password input (1st attempt)
+        password_in = 14'd1234;
+        submit = 1;
+        #10 submit = 0;
 
-        // Test Case 4: Fast Cool Mode
-        #20 button_ac = 1;
-        #10 button_ac = 0;
-        #20;
-        $display("Test Case 4: Fast Cool Mode");
-        $display("Fan Speed: %d, Fan Heat: %d", fan_speed, fan_heat);
+        // Test case 4: Incorrect password input (2nd attempt)
+        #20 password_in = 14'd5678;
+        submit = 1;
+        #10 submit = 0;
 
-        // Test Case 5: ECO Mode
-        #20 button_ac = 1;
-        #10 button_ac = 0;
-        #20;
-        $display("Test Case 5: ECO Mode");
-        $display("Fan Speed: %d, Fan Heat: %d", fan_speed, fan_heat);
+        // Test case 5: Incorrect password input (3rd attempt, trigger alarm)
+        #20 password_in = 14'd9012;
+        submit = 1;
+        #10 submit = 0;
 
-        // Test Case 6: Temperature bounds testing
-        #20;
-        // Try to go beyond maximum temperature
-        repeat(10) begin
-            button_up = 1;
-            #10 button_up = 0;
-            #10;
-        end
-        $display("Test Case 6a: Maximum Temperature Test");
-        $display("Temperature Registered: %d", dut.ts1.temperature_registered);
+        // Observe alarm signal
+        #50;
 
-        // Try to go below minimum temperature
-        repeat(10) begin
-            button_down = 1;
-            #10 button_down = 0;
-            #10;
-        end
-        $display("Test Case 6b: Minimum Temperature Test");
-        $display("Temperature Registered: %d", dut.ts1.temperature_registered);
+        // Test case 6: Reset system
+        reset = 0;
+        #10 reset = 1;
 
-        // Test Case 7: Simultaneous button press
+        // Test case 7: Unlock using the new password
+        password_in = 14'd2222;
+        submit = 1;
+        #10 submit = 0;
+
+        // Wait and observe the unlock signal
         #20;
-        button_up = 1;
-        button_down = 1;
-        #10;
-        button_up = 0;
-        button_down = 0;
-        $display("Test Case 7: Simultaneous Button Press Test");
-        $display("Temperature Registered: %d", dut.ts1.temperature_registered);
+
+        // Test case 8: Return to main menu
+        ms_button = 1;
+        #10 ms_button = 0;
 
         // End simulation
-        #100;
-        $display("Simulation completed");
-        $finish;
-    end
-
-    // Monitor changes
-    initial begin
-        $monitor("Time=%0t reset=%b button_ac=%b mode=%b temp=%d temp_reg=%d fan_speed=%d fan_heat=%d",
-                 $time, reset, button_ac, dut.mode_select, temperature, 
-                 dut.temperature_registered, fan_speed, fan_heat);
+        #50 $stop;
     end
 
 endmodule

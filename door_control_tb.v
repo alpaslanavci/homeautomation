@@ -1,22 +1,27 @@
-`timescale 1ns/1ps
+`timescale 1ns / 1ps
 
-module door_control_tb();
-    reg clk, reset;
+module door_control_tb;
+
+    // Inputs
+    reg clk;
+    reg reset;
+    reg submit;
+    reg change_password;
+    reg unlock_button;
+    reg ms_button;
     reg [13:0] password_in;
     reg [13:0] new_password;
-    reg change_password, unlock_button, ms_button;
-    wire unlock_signal, lock_signal, alarm_signal;
 
-    // State parameters 
-    localparam [1:0] PS = 2'b00;  
-    localparam [1:0] MS = 2'b01;  
-    localparam [1:0] AS = 2'b10;  
-    localparam [1:0] CP = 2'b11;  
+    // Outputs
+    wire unlock_signal;
+    wire lock_signal;
+    wire alarm_signal;
 
-    // Instantiate the door_control module
-    door_control dut (
+    // Instantiate the Door Control module
+    door_control uut (
         .clk(clk),
         .reset(reset),
+        .submit(submit),
         .password_in(password_in),
         .new_password(new_password),
         .change_password(change_password),
@@ -28,96 +33,79 @@ module door_control_tb();
     );
 
     // Clock generation
+    always #5 clk = ~clk;  // Clock with a period of 10 ns
+
+    // Test sequence
     initial begin
+        // Initial values
         clk = 0;
-        forever #5 clk = ~clk;
-    end
-
-    // Test stimulus
-    initial begin
-        // Initialize signals
         reset = 0;
-        password_in = 14'd0;
-        new_password = 14'd0;
+        submit = 0;
+        password_in = 0;
+        new_password = 0;
         change_password = 0;
         unlock_button = 0;
         ms_button = 0;
 
-        // Test Case 1: Reset and Initial State
-        $display("\nTest Case 1: Reset and Initial State Check");
-        #20 reset = 1;
-        #10;
-        $display("Initial State - Lock: %b, Unlock: %b, Alarm: %b", 
-                lock_signal, unlock_signal, alarm_signal);
+        // Reset system
+        #10 reset = 1;
 
-        // Test Case 2: Correct Password Entry (Master Key)
-        $display("\nTest Case 2: Correct Master Password Entry");
-        password_in = 14'd1111;  // Master key
-        #20;
-        $display("After Correct Password - Lock: %b, Unlock: %b, Alarm: %b", 
-                lock_signal, unlock_signal, alarm_signal);
+        // Test Case 1: Submit an incorrect password (1st attempt)
+        #20 password_in = 14'd1234;
+        submit = 1;
+        #10 submit = 0;
 
-        // Test Case 3: Unlock Button in Menu State
-        $display("\nTest Case 3: Unlock Button Test");
-        unlock_button = 1;
-        #20;
-        $display("After Unlock Button - Lock: %b, Unlock: %b, Alarm: %b", 
-                lock_signal, unlock_signal, alarm_signal);
-        unlock_button = 0;
+        // Test Case 2: Submit another incorrect password (2nd attempt)
+        #20 password_in = 14'd5678;
+        submit = 1;
+        #10 submit = 0;
 
-        // Test Case 4: Password Change Sequence
-        $display("\nTest Case 4: Password Change Test");
-        change_password = 1;
-        #20;
-        new_password = 14'd2222;
-        #20;
-        ms_button = 1;
-        #20;
-        $display("After Password Change - New Password Set: %d", dut.current_password);
-        change_password = 0;
-        ms_button = 0;
+        // Test Case 3: Submit an incorrect password (3rd attempt - trigger alarm)
+        #20 password_in = 14'd9999;
+        submit = 1;
+        #10 submit = 0;
 
-        // Test Case 5: Failed Password Attempts
-        $display("\nTest Case 5: Failed Password Attempts Test");
-        password_in = 14'd3333;  // Wrong password
-        repeat(3) begin
-            #20;
-            $display("Attempt %d - Lock: %b, Unlock: %b, Alarm: %b", 
-                    dut.fail_attempts + 1, lock_signal, unlock_signal, alarm_signal);
-        end
+        #50;
 
-        // Test Case 6: Alarm State Duration
-        $display("\nTest Case 6: Alarm State Duration Test");
-        #200;  // Wait for alarm counter
-        $display("After Alarm Timeout - Lock: %b, Unlock: %b, Alarm: %b", 
-                lock_signal, unlock_signal, alarm_signal);
-
-        // Test Case 7: New Password Verification
-        $display("\nTest Case 7: New Password Verification");
-        password_in = 14'd2222;  // Using new password
-        #20;
-        $display("Using New Password - Lock: %b, Unlock: %b, Alarm: %b", 
-                lock_signal, unlock_signal, alarm_signal);
-
-        // Test Case 8: Reset During Operation
-        $display("\nTest Case 8: Reset During Operation Test");
+        // Test Case 4: Reset the system after alarm
         reset = 0;
+        #10 reset = 1;
+
+        // Test Case 5: Submit the default password (correct input)
+        #10 password_in = 14'd1111;  // Default password
+        submit = 1;
+        #10 submit = 0;
+
+        // Wait to observe system response
         #20;
-        reset = 1;
-        $display("After Reset - Lock: %b, Unlock: %b, Alarm: %b", 
-                lock_signal, unlock_signal, alarm_signal);
+
+        // Test Case 6: Change the password
+        #10 change_password = 1;
+        new_password = 14'd2222;  // New password
+        #10 change_password = 0;
+        #10 ms_button = 1; // Return to menu state
+        #10 ms_button = 0;
+
+        // Reset the system to return to password state
+        reset = 0;
+        #10 reset = 1;
+
+
+        // Test Case 7: Submit the new password 
+        #10 password_in = 14'd2222;
+        submit = 1;
+        #10 submit = 0;
+
+        // Wait to observe system response
+        #20;
+
+        // Test Case 8: Unlock button functionality in menu state
+        #10 unlock_button = 1;
+        #10 unlock_button = 0;
+
 
         // End simulation
-        #100;
-        $display("\nSimulation completed");
-        $finish;
-    end
-
-    // Monitor changes
-    initial begin
-        $monitor("Time=%0t reset=%b state=%b password=%d new_pass=%d fail_attempts=%d alarm=%b unlock=%b lock=%b",
-                 $time, reset, dut.machine_state, password_in, new_password, 
-                 dut.fail_attempts, alarm_signal, unlock_signal, lock_signal);
+        #50 $stop;
     end
 
 endmodule

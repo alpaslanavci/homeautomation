@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module top_module_tb;
 
     // Inputs
@@ -52,7 +54,6 @@ module top_module_tb;
         .unlock_signal(unlock_signal),
         .lock_signal(lock_signal),
         .alarm_signal(alarm_signal),
-        .alarm(alarm),
         .extinguish(extinguish),
         .luminosity(luminosity),
         .color(color)
@@ -85,6 +86,7 @@ module top_module_tb;
         #10; // Wait for a few clock cycles before deasserting reset
         reset = 0;
         #10;
+        reset = 1;
 
         // Test AC Control
         button_ac = 1; #10; button_ac = 0; // Toggle AC
